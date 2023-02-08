@@ -45,12 +45,19 @@ print('Datentyp der Werte in Spalte Verbrauch:', type(test_input['Verbrauch'][1]
 
 #Testdaten als Tensor speichern
 test_input = torch.tensor(test_input.values)
-print('Tensor Shape danach:', test_input.shape)
-print('Typ danach:', type(test_input))
-print('Tensor aus Testdaten:', test_input)
+#print('Tensor Shape danach:', test_input.shape)
+#print('Typ danach:', type(test_input))
+#print('Tensor aus Testdaten:', test_input)
+
 #Zeilen und Spalten des Tensors tauschen für CNN, damit 2 Channels vorliegen
 test_input = torch.transpose(test_input, 0, 1)
-print('Tensor aus Testdaten nach Zeilen- und Spaltentausch:', test_input)
+
+#print('Tensor aus Testdaten nach Zeilen- und Spaltentausch:', test_input)
+#Tensor für CNN von float64 in float32 ändern
+test_input = test_input.float()
+#print(test_input)
+
+
 
 #Parameter für CNN definieren
 
@@ -90,8 +97,7 @@ class CNN(nn.Module):
 
 
 cnn = CNN()
-print('Netz:')
-print(cnn)
+print('Netz:', cnn)
 
 #Netz laden, wenn vorhanden
 if os.path.isfile('cnn.pt'):
@@ -104,20 +110,27 @@ if os.path.isfile('cnn.pt'):
 #print('Shape des Test Tensors:', test_tensor.shape)
 #print('Typ des Test Tensors:', type(test_input))
 
+#Zieloutput des Netzes definieren (muss gleiche Dimensionen haben wie Netzoutput)
+ziel_out = torch.randn(32,126)
+
 #mit Ziel- und Ausgangsdaten durch Netz iterieren
 for i in range(5):
 
     testout = cnn(test_input)
     #Netz trainieren und evaluieren
+    #print('Shape des testout nach Durchlauf des Netzes:', testout.shape)
+    #print('Shape des test_input:', test_input.shape)
 
-    ziel_out = test_input*2
+
+
     criterion = nn.MSELoss()
-    loss = criterion(test_input, ziel_out)
+    loss = criterion(testout, ziel_out)
     print('Loss:', loss)
 
     cnn.zero_grad()
     loss.backward()
     optimizer = optim.Adam(cnn.parameters(), lr=0.01)
     optimizer.step()
-#Netz speichern
+
+#Netz speichern (besser mit geringstem Loss)
 torch.save(cnn, 'cnn.pt')
