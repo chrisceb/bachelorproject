@@ -200,7 +200,7 @@ def train(epochs,trainX,trainY,validX,validY,model,optimizer,criterion,save_path
 #Modell trainieren
 cnn,out = train(10, trainX,trainY,validX,validY, cnn, optimizer, criterion, 'cnn.pt', freq = 1)
 
-
+"""
 
 
 #Netz laden, wenn vorhanden
@@ -219,7 +219,7 @@ cnn,out = train(10, trainX,trainY,validX,validY, cnn, optimizer, criterion, 'cnn
 
 
 #mit Ziel- und Ausgangsdaten durch Netz iterieren
-"""
+
 for i in range(5):
 
     testout = cnn(test_input)
