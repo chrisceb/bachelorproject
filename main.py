@@ -61,11 +61,14 @@ test_input = test_input.float()
 
 #Parameter für CNN definieren
 
+win = 30    #Größe des Windows an betrachteten historischen Daten
 filter1_size = 128
 filter2_size = 32
 kernel_size = 2
 stride = 1
 pool_size = 2
+
+#Subsequenzen für Training und Vorhersage definineren
 
 
 
@@ -82,16 +85,23 @@ class CNN(nn.Module):
 
         self.maxpool = nn.MaxPool1d(pool_size)
 
+        self.dim1 = int(0.5*(0.5*(win-1)-1)) * filter2_size
+
+        self.lin1 = nn.Linear(self.dim1, pred_window)
 
         self.dropout = nn.Dropout(0.25)
 
     def forward(self, x):
+        #1. Convolutional Layer und Maxpool
         x = F.relu(self.conv1(x))
         x = self.maxpool(x)
+        #2. Convolutional Layer und Maxpool
         x = F.relu(self.conv2(x))
         x = self.maxpool(x)
+        #
         x = self.dropout(x)
 
+        x = self.lin1(x)
         return x
 
 
@@ -122,14 +132,17 @@ for i in range(5):
     #print('Shape des test_input:', test_input.shape)
 
 
-
+    #Fehlerfunktion definieren und Fehler ausgeben
     criterion = nn.MSELoss()
     loss = criterion(testout, ziel_out)
     print('Loss:', loss)
 
+    #Veränderungen der Gradienten zurücksetzen
     cnn.zero_grad()
+    #Loss durch Backpropagation laufen lassen
     loss.backward()
-    optimizer = optim.Adam(cnn.parameters(), lr=0.01)
+    #Einstellung des Optimizers, Parameter und Lernrate
+    optimizer = optim.Adam(cnn.parameters(), lr=0.10)
     optimizer.step()
 
 #Netz speichern (besser mit geringstem Loss)
