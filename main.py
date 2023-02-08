@@ -38,7 +38,7 @@ x_tensor = torch.tensor(test_input['Datum'])
 #Verbrauch als Float als y des Testtensors
 y_tensor = torch.tensor((test_input['Verbrauch'].values.astype(np.float32)))
 #Zusammenfügen zu Tensor für das CNN
-test_tensor =
+#test_tensor =
 print(test_tensor)
 print('Tensor Shape:', test_tensor.shape)
 
