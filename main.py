@@ -11,6 +11,7 @@ import datetime as dt
 import time
 import locale
 
+#Testkommentar
 #Testdaten laden und ausgeben
 test_input = pd.read_csv('Daten_5_Tage_Hauptstromzahler_Schule.csv', sep=';')
 #test_input = torch.randn(2,100)
